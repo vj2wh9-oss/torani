@@ -10,6 +10,10 @@
   'use strict';
   var U = DL.util, ui = DL.ui, S = DL.store, el = U.el;
 
+  /* 版。index.html の ?v= と同じ数にそろえる。
+     端末が古い控えを出していないか、トップの隅で見分けるためのもの */
+  var VERSION = 3;
+
   var view, title, tag, backBtn, syncBtn;
   var busy = false;
 
@@ -114,6 +118,7 @@
     render();
   }
 
+  DL.VERSION = VERSION;
   DL.app = { render: render, loadEvents: loadEvents, go: go, open: open, back: back };
   document.addEventListener('DOMContentLoaded', init);
 })(window.DL = window.DL || {});

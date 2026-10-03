@@ -45,6 +45,8 @@
 
     wrap.appendChild(ui.section('当日事務_GUI'));
     wrap.appendChild(el('div', { class: 'mn-list' }, MENU.map(item)));
+    // 端末が古い控えを出していないか、ここで見分ける
+    wrap.appendChild(el('div', { class: 'ver', text: 'v' + (DL.VERSION || '?') }));
     root.appendChild(wrap);
   }
 

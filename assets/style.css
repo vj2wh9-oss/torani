@@ -144,6 +144,7 @@ p { margin: 0; }
   background: var(--card2); border: 1px solid var(--line2); color: var(--muted);
   cursor: default; pointer-events: none;
 }
+.ver { font-size: 10.5px; color: var(--muted); text-align: right; padding: 0 2px; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 3px;
