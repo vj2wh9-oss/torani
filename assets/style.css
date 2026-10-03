@@ -152,36 +152,78 @@ p { margin: 0; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field-label { font-size: 11.5px; color: var(--muted); font-weight: 700; letter-spacing: .06em; }
 
-/* ---------------- イベントの一覧 ---------------- */
-.ev-list { display: flex; flex-direction: column; gap: 10px; }
-.ev-card {
-  display: flex; align-items: stretch; gap: 0; width: 100%; padding: 0; overflow: hidden;
-  text-align: left; font: inherit; color: inherit; cursor: pointer;
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+/* ---------------- 券（チケット） ----------------
+
+   METEO365 のチケットと同じ組み立てにそろえる。
+   左が券の本体（名前と中身）、右が「もぎり」で、そこに残り日数を大きく出す。
+   切り取り線は破線。その上下に、地の色の丸を半分だけのぞかせて切り欠きにする。
+   登録したロゴは、券の地紋のように本体の右下へうっすら敷く。 */
+
+.tk-list { display: flex; flex-direction: column; gap: 10px; }
+
+.tk-card, .tk-hero {
+  position: relative; display: flex; align-items: stretch; gap: 0;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden; color: inherit; text-decoration: none;
+  width: 100%; padding: 0; font: inherit; text-align: left;
 }
-.ev-card:active { border-color: var(--accent); }
-.ev-logo {
-  flex: none; width: 82px; align-self: stretch; object-fit: cover;
-  background: var(--card2); border-right: 1px solid var(--line);
+/* 近いものは縁を強く、終わったものは薄く */
+.tk-card.soon { border-color: var(--accent); }
+.tk-card.today { border-color: var(--event); }
+.tk-card.past, .tk-hero.past { opacity: .62; }
+.tk-card { cursor: pointer; }
+.tk-card:active { border-color: var(--accent); }
+
+.tk-card-main {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;
+  padding: 11px 12px 11px 13px;
+  position: relative; isolation: isolate;
 }
-.ev-logo.none { display: flex; align-items: center; justify-content: center; color: var(--muted); }
-.ev-main { flex: 1; min-width: 0; padding: 11px 12px; display: flex; flex-direction: column; gap: 5px; }
-.ev-name { font-size: 15px; font-weight: 800; }
-.ev-sub { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-.ev-chev { flex: none; display: flex; align-items: center; padding-right: 8px; color: var(--muted); }
-/* 当日のものは、ひと目で分かるように緑で縁取る */
-.ev-card.today { border-color: var(--event); }
-.ev-card.today .ev-logo { border-right-color: var(--event); }
+/* ロゴ。券の下辺にぴたりと付けて、右下へ大きくうっすら */
+.tk-logo {
+  position: absolute; right: 8px; bottom: 0; z-index: -1; pointer-events: none;
+  height: calc(100% - 6px); width: auto; max-width: 58%;
+  object-fit: contain; object-position: right bottom;
+  opacity: .1;
+}
+.tk-card-head { display: flex; align-items: center; gap: 6px; }
+.tk-card-head .icon { color: var(--event); flex: none; }
+.tk-card-name {
+  font-size: 15px; font-weight: 700; letter-spacing: .01em; overflow-wrap: anywhere;
+}
+.tk-card-sub { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* 右のもぎり（半券）。ここに残り日数を大きく出す */
+.tk-card-stub {
+  flex: none; width: 82px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1px;
+  background: var(--card2); border-left: 1px dashed var(--line2);
+  font-variant-numeric: tabular-nums;
+}
+.tk-num { font-size: 22px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+.tk-unit { font-size: 10.5px; color: var(--muted); font-weight: 700; }
+.tk-card.soon .tk-num { color: var(--accent); }
+.tk-card.today .tk-num, .tk-hero.today .tk-num { color: var(--event); }
+
+/* もぎり線の上下の切り欠き。地の色の丸を半分だけのぞかせる */
+.tk-card::before, .tk-card::after,
+.tk-hero::before, .tk-hero::after {
+  content: ''; position: absolute; right: 82px; width: 12px; height: 12px;
+  margin-right: -6px; border-radius: 50%; background: var(--bg);
+  border: 1px solid var(--line);
+}
+.tk-card::before, .tk-hero::before { top: -7px; }
+.tk-card::after, .tk-hero::after { bottom: -7px; }
+
+/* 開いたときの見出し。一覧の券とまったく同じ大きさ・同じ中身 */
+@keyframes tk-hero-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.tk-hero { animation: tk-hero-in .24s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .tk-hero { animation: none; } }
 
 /* ---------------- 頒布物 ---------------- */
-.it-head {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px;
-}
-.it-head-logo { flex: none; width: 44px; height: 44px; object-fit: cover; border-radius: var(--radius-s); }
-.it-head-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.it-head-n { font-size: 15px; font-weight: 800; }
-
 .it-list { display: flex; flex-direction: column; gap: 8px; }
 .it-row {
   display: flex; align-items: stretch; gap: 0; overflow: hidden;

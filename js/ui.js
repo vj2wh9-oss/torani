@@ -15,6 +15,11 @@
     return el('span', { class: 'chip ' + (cls || ''), text: text });
   }
 
+  /** 絵つきのチップ。METEO365 の iconChip と同じ */
+  function iconChip(name, text, cls) {
+    return el('span', { class: 'chip ' + (cls || '') }, [icon(name, 13), el('span', { text: text })]);
+  }
+
   function section(title, right) {
     return el('div', { class: 'section' }, [el('span', { text: title }), right || null]);
   }
@@ -100,7 +105,7 @@
   }
 
   DL.ui = {
-    icon: icon, btn: btn, chip: chip, section: section, empty: empty,
+    icon: icon, btn: btn, chip: chip, iconChip: iconChip, section: section, empty: empty,
     field: field, input: input, toast: toast, sheet: sheet, closeAll: closeAll,
     confirm: confirm
   };

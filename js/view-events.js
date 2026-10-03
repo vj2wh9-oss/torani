@@ -1,4 +1,5 @@
-/* トップ：イベント（即売会の券）を選ぶ */
+/* トップ：イベント（即売会の券）を選ぶ。
+   券の見た目は METEO365 のチケットとそろえてある（DL.ticket） */
 (function (DL) {
   'use strict';
   var U = DL.util, ui = DL.ui, S = DL.store, el = U.el;
@@ -29,41 +30,10 @@
       return;
     }
 
-    var today = U.today();
-    var list = el('div', { class: 'ev-list' });
-    S.state.events.forEach(function (ev) { list.appendChild(card(ev, today)); });
-    wrap.appendChild(list);
+    wrap.appendChild(el('div', { class: 'tk-list' }, S.state.events.map(function (ev) {
+      return DL.ticket.card(ev, { onclick: function () { DL.app.open(ev.id); } });
+    })));
     root.appendChild(wrap);
-  }
-
-  function card(ev, today) {
-    var left = U.isISO(ev.date) ? U.diffDays(today, ev.date) : null;
-    var logo = el('span', { class: 'ev-logo none' }, ui.icon('event', 22));
-    if (ev.logo) {
-      DL.api.pic(ev.logo).then(function (src) {
-        if (!src) return;
-        var img = el('img', { class: 'ev-logo', src: src, alt: '' });
-        if (logo.parentNode) logo.parentNode.replaceChild(img, logo);
-      });
-    }
-    return el('button', {
-      type: 'button', class: 'ev-card' + (left === 0 ? ' today' : ''),
-      onclick: function () { DL.app.open(ev.id); }
-    }, [
-      logo,
-      el('div', { class: 'ev-main' }, [
-        el('div', { class: 'ev-name', text: ev.name }),
-        el('div', { class: 'ev-sub' }, [
-          U.isISO(ev.date) ? ui.chip(U.fmtMD(ev.date), left === 0 ? 'ok' : 'ghosty') : null,
-          left === 0 ? ui.chip('今日', 'ok') : null,
-          left > 0 ? ui.chip('あと' + left + '日', 'ghosty') : null,
-          left < 0 ? ui.chip(Math.abs(left) + '日前', 'ghosty') : null,
-          ev.venue ? ui.chip(ev.venue, 'ghosty') : null,
-          ev.space ? ui.chip(ev.space, 'soft') : null
-        ])
-      ]),
-      el('span', { class: 'ev-chev' }, ui.icon('chevronRight', 18))
-    ]);
   }
 
   DL.views = DL.views || {};

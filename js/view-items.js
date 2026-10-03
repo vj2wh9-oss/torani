@@ -18,11 +18,10 @@
       return;
     }
 
-    wrap.appendChild(head(one.event));
+    wrap.appendChild(head(one.event, id));
 
     var rows = S.lines(id);
     wrap.appendChild(ui.section('頒布物', el('div', { class: 'row-wrap' }, [
-      ui.chip(rows.length + '点', 'ghosty'),
       ui.btn('足す', 'tiny', function () { addSheet(id); }, 'plus')
     ])));
 
@@ -50,23 +49,19 @@
     root.appendChild(wrap);
   }
 
-  /* 券の顔。どのイベントを見ているか、いつも見えるようにしておく */
-  function head(ev) {
-    var box = el('div', { class: 'it-head' });
-    if (ev.logo) {
-      DL.api.pic(ev.logo).then(function (src) {
-        if (src) box.insertBefore(el('img', { class: 'it-head-logo', src: src, alt: '' }), box.firstChild);
-      });
-    }
-    box.appendChild(el('div', { class: 'it-head-main' }, [
-      el('div', { class: 'it-head-n', text: ev.name }),
-      el('div', { class: 'ev-sub' }, [
-        U.isISO(ev.date) ? ui.chip(U.fmtMD(ev.date), 'ghosty') : null,
-        ev.venue ? ui.chip(ev.venue, 'ghosty') : null,
-        ev.space ? ui.chip(ev.space, 'soft') : null
-      ])
-    ]));
-    return box;
+  /* 券の見出し。一覧の券がそのまま上がってきたように、同じ札を出す。
+     METEO365 のチケットの画面と同じ組み立て */
+  function head(ev, id) {
+    var sum = S.sum(id);
+    return DL.ticket.card(ev, {
+      hero: true,
+      chips: [
+        ui.chip('頒布物 ' + sum.all + '点', 'ghosty'),
+        sum.counted ? ui.chip('数えた ' + sum.counted + ' / ' + sum.all,
+          sum.counted >= sum.all ? 'ok' : 'warn') : null,
+        sum.sold ? ui.chip('頒布 ' + sum.sold + '部', 'ok') : null
+      ].filter(Boolean)
+    });
   }
 
   /* 1点ぶん。持ち込みと持ち帰りを入れると、販売数が出る */
