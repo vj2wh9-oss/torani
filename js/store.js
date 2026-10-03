@@ -10,6 +10,7 @@
   var LS = 'datemeteo.work';
 
   var state = {
+    page: '',            // トップで選んだもの（'' ならトップ、'stock' なら在庫集計）
     events: [],          // 券の一覧
     eventId: '',         // いま見ている券
     one: null,           // その券の中身（サーバーから読んだまま）

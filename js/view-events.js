@@ -9,13 +9,7 @@
 
     if (!DL.api.ready()) {
       wrap.appendChild(ui.section('はじめに'));
-      wrap.appendChild(el('div', { class: 'card' }, [
-        el('p', { text: 'METEO365 の 設定 →「イベント当日用サイト」で合鍵を作り、'
-          + 'そこに出る URL をこの端末で開いてください。' }),
-        el('p', { class: 'muted small',
-          text: 'この合鍵でできるのは、即売会の券と頒布物を読むことと、'
-            + '数えた在庫を預けることだけです。' })
-      ]));
+      wrap.appendChild(DL.views.home.intro());
       root.appendChild(wrap);
       return;
     }

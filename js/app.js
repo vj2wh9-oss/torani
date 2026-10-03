@@ -13,14 +13,35 @@
   var view, title, tag, backBtn, syncBtn;
   var busy = false;
 
+  /** いまどの画面にいるか。'home' → 'events' → 'items' の3段 */
+  function at() {
+    if (S.state.eventId) return 'items';
+    return S.state.page === 'stock' ? 'events' : 'home';
+  }
+
   function render() {
     U.clear(view);
+    var here = at();
     var one = S.state.eventId && S.state.one;
-    backBtn.hidden = !S.state.eventId;
+    backBtn.hidden = here === 'home';
+    backBtn.setAttribute('aria-label', here === 'items' ? 'イベントの一覧へ戻る' : 'トップへ戻る');
+    syncBtn.hidden = here === 'home';
     title.textContent = 'だてメテオ';
-    tag.textContent = one ? (one.event.name || '') : 'イベント当日用';
-    if (S.state.eventId) DL.views.items.render(view);
-    else DL.views.events.render(view);
+    tag.textContent = here === 'home' ? 'イベント当日用'
+      : here === 'items' && one ? (one.event.name || '') : '在庫集計';
+    if (here === 'items') DL.views.items.render(view);
+    else if (here === 'events') DL.views.events.render(view);
+    else DL.views.home.render(view);
+  }
+
+  /** トップから選ぶ。いまあるのは在庫集計だけ */
+  function go(page) {
+    S.state.page = page || '';
+    S.state.eventId = '';
+    S.state.one = null;
+    render();
+    window.scrollTo(0, 0);
+    if (page === 'stock') loadEvents();
   }
 
   /** イベントの一覧を読み直す */
@@ -62,9 +83,14 @@
     });
   }
 
+  /** 一段戻る。頒布物 → イベントの一覧 → トップ */
   function back() {
-    S.state.eventId = '';
-    S.state.one = null;
+    if (S.state.eventId) {
+      S.state.eventId = '';
+      S.state.one = null;
+    } else {
+      S.state.page = '';
+    }
     render();
     window.scrollTo(0, 0);
   }
@@ -86,9 +112,8 @@
     });
 
     render();
-    loadEvents();
   }
 
-  DL.app = { render: render, loadEvents: loadEvents, open: open, back: back };
+  DL.app = { render: render, loadEvents: loadEvents, go: go, open: open, back: back };
   document.addEventListener('DOMContentLoaded', init);
 })(window.DL = window.DL || {});
