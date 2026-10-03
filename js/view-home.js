@@ -1,17 +1,17 @@
-/* トップ：会場でやることを選ぶ。
+/* トップ：当日の事務を選ぶ。
 
    いまできるのは「在庫集計」だけ。
    残りの3つは置き場所だけ先に取ってあり、押せないようにしてある。 */
 (function (DL) {
   'use strict';
-  var U = DL.util, ui = DL.ui, S = DL.store, el = U.el;
+  var U = DL.util, ui = DL.ui, el = U.el;
 
   /* 縦に並べるもの。off が真のものは、まだ押せない */
   var MENU = [
-    { key: 'stock', icon: 'sales', label: '在庫集計', note: 'イベントごとに在庫を数える' },
-    { key: 'extra', icon: 'book', label: '新刊余部登録', off: true },
-    { key: 'hello', icon: 'people', label: '挨拶リスト', off: true },
-    { key: 'gift', icon: 'note', label: '差しいれメモ', off: true }
+    { key: 'stock', label: '在庫集計' },
+    { key: 'extra', label: '新刊余部登録', off: true },
+    { key: 'hello', label: '挨拶リスト', off: true },
+    { key: 'gift', label: '差しいれメモ', off: true }
   ];
 
   /** 合鍵がまだ無いときの案内。イベントの一覧からも使う */
@@ -30,15 +30,9 @@
       type: 'button',
       class: 'mn-btn' + (m.off ? ' off' : ''),
       disabled: m.off ? 'disabled' : null,
-      onclick: m.off ? null : function () { DL.app.go(m.key); }
-    }, [
-      el('span', { class: 'mn-ico' }, ui.icon(m.icon, 20)),
-      el('span', { class: 'mn-text' }, [
-        el('b', { class: 'mn-label', text: m.label }),
-        m.note ? el('span', { class: 'mn-note', text: m.note }) : null
-      ]),
-      ui.icon('chevronRight', 18, 'mn-arrow')
-    ]);
+      onclick: m.off ? null : function () { DL.app.go(m.key); },
+      text: m.label
+    });
   }
 
   function render(root) {
@@ -49,7 +43,7 @@
       wrap.appendChild(intro());
     }
 
-    wrap.appendChild(ui.section('会場でやること'));
+    wrap.appendChild(ui.section('当日事務_GUI'));
     wrap.appendChild(el('div', { class: 'mn-list' }, MENU.map(item)));
     root.appendChild(wrap);
   }
